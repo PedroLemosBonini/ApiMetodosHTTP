@@ -14,9 +14,9 @@ module.exports = class orgController{
             return res.status(400).json({ error: "Email inválido. Deve conter @" });
           }
 
-        const existingOrg = organizadores.find(Org => Org.telefone === telefone);
+        const existingOrg = organizadores.find(Org => Org.email === email);
         if (existingOrg) {
-            return res.status(400).json({ error: "telefone já cadastrado" });
+            return res.status(400).json({ error: "email já cadastrado" });
         }
 
         id++
@@ -33,9 +33,13 @@ module.exports = class orgController{
     static async updateOrganizador(req, res) {
         const { id, telefone, email, senha, nome } = req.body;
     
-        if(!telefone || !email || !senha || !nome){
+        if (!telefone || !email || !senha || !nome) {
             return res.status(400).json({ error: "Todos os campos devem ser preenchidos" });
-        }
+          } else if (isNaN(telefone) || telefone.length !== 11) {
+            return res.status(400).json({ error: "telefone inválido. Deve conter exatamente 11 dígitos numéricos" });
+          } else if (!email.includes("@")) {
+            return res.status(400).json({ error: "Email inválido. Deve conter @" });
+          }
         const orgIndex = organizadores.findIndex(org => org.id === id);
     
         if(orgIndex === -1){
